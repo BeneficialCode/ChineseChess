@@ -23,9 +23,14 @@ set(SOURCES
     "src/Graphics/VertexArray.cpp"
     "src/Graphics/Shader.h"
     "src/Graphics/Shader.cpp"
+    "src/Graphics/Texture.h"
+    "src/Graphics/Texture.cpp"
+    "src/Graphics/SubTexture.h"
+    "src/Graphics/SubTexture.cpp"
 
     "src/Chess/Board.h"
     "src/Chess/Board.cpp"
+    "src/Chess/Move.h"
 
     "dependencies/imgui/imgui.cpp"
     "dependencies/imgui/imgui_demo.cpp"

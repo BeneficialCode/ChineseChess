@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "Resources.h"
+#include "Chess/Board.h"
 #include "Graphics/Renderer.h"
+#include "Graphics/Texture.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -40,7 +42,7 @@ Application::Application(uint32_t width, uint32_t height, const std::string &nam
         glfwTerminate();
         return;
     }
-
+    // 通知GLFW将窗口的上下文设置为当前上下文
     glfwMakeContextCurrent(m_Window);
 
     glfwSwapInterval(1);
@@ -134,11 +136,21 @@ void Application::Init()
     style.ChildBorderSize = 0.0f;
     style.WindowMinSize = {200.0f, 200.0f};
 
+    std::shared_ptr<Texture> chessPieces = std::make_shared<Texture>(Resources::Textures::CHESS_PIECES,
+        sizeof(Resources::Textures::CHESS_PIECES));
+
+    const float tileSize = (float)chessPieces->GetWidth() / 7.0f;
+    for(int y=0;y<2;y++)
+        for(int x=0;x<7;x++)
+            m_ChessPieceSprites[y * 7 + x] = std::make_shared<SubTexture>(chessPieces, glm::vec2(x, y), glm::vec2(tileSize));
+
     m_DarkSquareColour = HexToColour(0x532A00FF);
     m_LightSquareColour = HexToColour(0xFFB160FF);
 
     m_BackgroundColour = {0.2f, 0.2f, 0.2f, 1.0f};
 
+
+    m_BoardFEN = Board::StartFEN;
     m_BoardFEN.resize(100);
 
     FramebufferSpecification spec;
@@ -221,7 +233,7 @@ void Application::RenderImGui()
 
         if (ImGui::InputText("##FEN", m_BoardFEN.data(), m_BoardFEN.size(), ImGuiInputTextFlags_EnterReturnsTrue))
         {
-
+            
         }
 
         if (ImGui::Button("Copy FEN to clipboard"))
@@ -261,4 +273,44 @@ void Application::OnKeyPressed(int32_t key, int32_t scancode, int32_t action, in
 void Application::OnMouseButton(int32_t button, int32_t action, int32_t mods)
 {
 
+}
+
+std::shared_ptr<SubTexture> Application::GetChessSprite(Piece piece) {
+    switch (piece)
+    {
+    case BlackKing:
+        return m_ChessPieceSprites[0];
+    case BlackAdvisor:
+        return m_ChessPieceSprites[1];
+    case BlackBishop:
+        return m_ChessPieceSprites[2];
+    case BlackKnight:
+        return m_ChessPieceSprites[3];
+    case BlackRook:
+        return m_ChessPieceSprites[4];
+    case BlackCannon:
+        return m_ChessPieceSprites[5];
+    case BlackPawn:
+        return m_ChessPieceSprites[6];
+    case RedKing:
+        return m_ChessPieceSprites[7];
+    case RedAdvisor:
+        return m_ChessPieceSprites[8];
+    case RedBishop:
+        return m_ChessPieceSprites[9];
+    case RedKnight:
+        return m_ChessPieceSprites[10];
+    case RedRook:
+        return m_ChessPieceSprites[11];
+    case RedCannon:
+        return m_ChessPieceSprites[12];
+    case RedPawn:
+        return m_ChessPieceSprites[13];
+    case None:
+        return nullptr;
+    default:
+        break;
+    }
+
+    throw std::runtime_error("Invalid piece");
 }

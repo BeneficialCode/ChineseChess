@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Graphics/Framebuffer.h"
+#include "Graphics/SubTexture.h"
 
 #include "Chess/Board.h"
 
@@ -39,6 +40,8 @@ private:
     void RenderSettingsPanel(bool* show);
     void RenderBoardLines();
 
+    std::shared_ptr<SubTexture> GetChessSprite(Piece piece);
+
     void OnWindowClose();
     void OnWindowResize(int32_t width,int32_t height);
     void OnKeyPressed(int32_t key,int32_t scancode,int32_t action,int32_t mods);
@@ -55,8 +58,11 @@ private:
     }m_WindowProperties;
 
     bool m_Running = false;
-
+    
+    Board m_Board;
     std::string m_BoardFEN;
+
+    std::array<std::shared_ptr<SubTexture>,14> m_ChessPieceSprites;
 
     std::shared_ptr<Framebuffer> m_ChessViewport;
     glm::vec2 m_ChessViewportSize;
