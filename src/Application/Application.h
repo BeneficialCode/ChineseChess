@@ -60,6 +60,8 @@ private:
     bool m_Running = false;
     
     Board m_Board;
+    Square m_SelectedPiece;
+    bool m_IsHoldingPiece;
     std::string m_BoardFEN;
 
     std::array<std::shared_ptr<SubTexture>,14> m_ChessPieceSprites;

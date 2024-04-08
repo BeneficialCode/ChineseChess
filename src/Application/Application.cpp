@@ -272,7 +272,36 @@ void Application::OnKeyPressed(int32_t key, int32_t scancode, int32_t action, in
 
 void Application::OnMouseButton(int32_t button, int32_t action, int32_t mods)
 {
+    if(button == GLFW_MOUSE_BUTTON_LEFT){
+        // Convert ImGui viewport position to rendering coordinates
+        glm::vec2& point = m_BoardMousePosition;
 
+        if(action == GLFW_PRESS){
+            m_IsHoldingPiece = true;
+
+            if(point.x > -5 && point.x < 5 && point.y > -5 && point.y < 6) {
+                // 横排 由列组成
+                float x = round(point.x);
+                Square rank = (Square)(x+4.0f);
+                // 纵队 由路组成
+                float y = round(point.y);
+                Square file = (Square)abs(y-5.0f);
+
+                std::cout<<rank<<file<<std::endl;
+
+            }
+        }
+        else if(action == GLFW_RELEASE){
+
+            m_IsHoldingPiece = false;
+
+        }
+
+       
+    }
+    else if(button == GLFW_MOUSE_BUTTON_RIGHT){
+        
+    }
 }
 
 std::shared_ptr<SubTexture> Application::GetChessSprite(Piece piece) {
