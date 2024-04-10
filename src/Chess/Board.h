@@ -3,8 +3,15 @@
 #include <array>
 #include <ostream>
 #include <string>
+#include <vector>
 
 #include "Move.h"
+
+struct Move {
+    unsigned char From;
+    unsigned char To;
+    unsigned char Captured;
+};
 
 class Board {
 public:
@@ -16,14 +23,19 @@ public:
 
     void FromFEN(const std::string& fen);
     std::string ToFEN() const;
-    
+
     static constexpr std::string_view StartFEN = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1";
 
     inline Piece operator[](Square s) const { return m_Board[s]; }
 
+    std::vector<Move> GetPieceLegalMoves(Square s) const;
+    
 private:
 
     std::array<Piece, 256> m_Board;
+
+    Colour m_PlayerTurn;
+
     // The side to move
     int32_t m_HalfMoves = 0;
     // The number of the full move. It starts at 1, and is incremented after Black's move.

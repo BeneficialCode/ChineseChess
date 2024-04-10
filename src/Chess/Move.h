@@ -100,3 +100,11 @@ inline constexpr Square ToSquare(float file,float rank) {
     Square square = 51 + (uint8_t)rank * 16 + (uint8_t)file;
     return square;
 }
+
+inline constexpr Square RankOf(Square s) {
+    return s / 16;
+}
+
+inline constexpr Square FileOf(Square s) {
+    return s % 16;
+}

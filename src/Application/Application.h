@@ -61,7 +61,8 @@ private:
     
     Board m_Board;
     Square m_SelectedPiece = INVALID_SQUARE;
-    bool m_IsHoldingPiece;
+    bool m_IsHoldingPiece = false;
+    std::vector<Move> m_LegalMoves;
     std::string m_BoardFEN;
 
     std::array<std::shared_ptr<SubTexture>,14> m_ChessPieceSprites;
@@ -73,6 +74,7 @@ private:
 
     glm::vec4 m_LightSquareColour;
     glm::vec4 m_DarkSquareColour;
+    glm::vec4 m_LegalMoveColour;
     
     glm::vec4 m_BackgroundColour;
 

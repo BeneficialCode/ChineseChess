@@ -146,7 +146,7 @@ void Application::Init()
 
     m_DarkSquareColour = HexToColour(0x532A00FF);
     m_LightSquareColour = HexToColour(0xFFB160FF);
-
+    m_LegalMoveColour = { 1.0f, 0.0f, 1.0f, 0.5f };
     m_BackgroundColour = {0.2f, 0.2f, 0.2f, 1.0f};
 
 
@@ -290,14 +290,19 @@ void Application::OnMouseButton(int32_t button, int32_t action, int32_t mods)
                 Square selectedSquare = ToSquare(rank,file);
 
                 if(m_SelectedPiece != INVALID_SQUARE && m_SelectedPiece != selectedSquare) {
-                   
-                   m_SelectedPiece = INVALID_SQUARE;
+                    
+                    m_SelectedPiece = INVALID_SQUARE;
+                    m_LegalMoves.clear();
                 }
                 else {
+                    m_LegalMoves = m_Board.GetPieceLegalMoves(selectedSquare);
                     Square piece = m_Board[selectedSquare];
                     m_SelectedPiece = piece == None ? INVALID_SQUARE : selectedSquare;
                 }
-
+            }
+            else{
+                m_SelectedPiece = INVALID_SQUARE;
+                m_LegalMoves.clear();
             }
         }
         else if(action == GLFW_RELEASE){
@@ -319,12 +324,11 @@ void Application::OnMouseButton(int32_t button, int32_t action, int32_t mods)
             m_IsHoldingPiece = false;
             m_SelectedPiece = INVALID_SQUARE;
         }
-
-       
     }
     else if(button == GLFW_MOUSE_BUTTON_RIGHT){
         m_SelectedPiece = INVALID_SQUARE;
-        m_IsHoldingPiece=false;
+        m_IsHoldingPiece = false;
+        m_LegalMoves.clear();
     }
 }
 

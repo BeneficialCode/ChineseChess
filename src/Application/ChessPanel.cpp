@@ -473,6 +473,19 @@ void Application::RenderBoard()
     if(m_SelectedPiece != INVALID_SQUARE)
         Renderer::DrawRect({m_BoardMousePosition.x,m_BoardMousePosition.y,0.5f}, {1.0f, 1.0f}, GetChessSprite(m_Board[m_SelectedPiece]));
 
+
+    // Draw legal moves
+    if(m_SelectedPiece != INVALID_SQUARE)
+    {
+        for(const Move& move : m_LegalMoves)
+        {
+            Square square = move.To - 51;
+            int rank = RankOf(square);
+            int file = FileOf(square);
+            Renderer::DrawRect({-4.0f + file, 5.0f - rank,0.0f}, {1.0f, 1.0f}, m_LegalMoveColour);
+        }
+    }
+
     Renderer::Flush();
 
     // Deselect framebuffer to render ImGui to window

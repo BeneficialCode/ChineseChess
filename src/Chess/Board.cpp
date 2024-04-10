@@ -1,8 +1,6 @@
 #include "Board.h"
 
-
-
-
+#include <vector>
 #include <sstream>
 
 static constexpr std::array<Piece,256> s_StartBoard = {
@@ -90,4 +88,124 @@ static unsigned char PositionMask[7] = {2, 4, 16, 1, 1, 1, 8};
 
 void Board::Reset() {
     m_Board = s_StartBoard;
+}
+
+std::vector<Move> Board::GetPieceLegalMoves(Square s) const {
+    Piece piece = m_Board[s];
+
+    if(piece == INVALID_SQUARE || piece == None)
+        return {};
+
+    
+    Colour playerColour = GetPieceColour(piece);
+    Colour enemyColour = OppositeColour(playerColour);
+
+    // 对方行棋
+    if(enemyColour == m_PlayerTurn)
+        return {};
+
+    std::vector<Move> moves;
+
+    PieceType type = GetPieceType(piece);
+    switch (type)
+    {
+    case PieceType::King:
+        for(int i=0;i<4;i++){
+            Square to = s + KingDir[i];
+            if(LegalPosition[playerColour][to] & PositionMask[0]){
+                if(m_Board[to] == None || GetPieceColour(m_Board[to]) == enemyColour){
+                    moves.push_back({s,to,m_Board[to]});
+                }
+            }
+        }
+        break;
+    case PieceType::Advisor:
+        for(int i=0;i<4;i++){
+            Square to = s + AdvisorDir[i];
+            if(LegalPosition[playerColour][to] & PositionMask[1]){
+                if(m_Board[to] == None || GetPieceColour(m_Board[to]) == enemyColour){
+                    moves.push_back({s,to,m_Board[to]});
+                }
+            }
+        }
+        break;
+    case PieceType::Bishop:
+        for(int i=0;i<4;i++){
+            Square to = s + BishopDir[i];
+            if(LegalPosition[playerColour][to] & PositionMask[2]){
+                if(m_Board[to] == None || GetPieceColour(m_Board[to]) == enemyColour){
+                    if(m_Board[s + BishopCheck[i]] == None){
+                        moves.push_back({s,to,m_Board[to]});
+                    }
+                }
+            }
+        }
+        break;
+    case PieceType::Knight:
+        for(int i=0;i<8;i++){
+            Square to = s + KnightDir[i];
+            if(LegalPosition[playerColour][to] & PositionMask[4]){
+                if(m_Board[to] == None || GetPieceColour(m_Board[to]) == enemyColour){
+                    if(m_Board[s + KnightCheck[i]] == None){
+                        moves.push_back({s,to,m_Board[to]});
+                    }
+                }
+            }
+        }
+        break;
+    case PieceType::Rook:
+        for(int i=0;i<4;i++){
+            Square to = s + RookDir[i];
+            while(LegalPosition[playerColour][to] & PositionMask[3]){
+                if(m_Board[to] == None){
+                    moves.push_back({s,to,m_Board[to]});
+                }else{
+                    if(GetPieceColour(m_Board[to]) == enemyColour){
+                        moves.push_back({s,to,m_Board[to]});
+                    }
+                    break;
+                }
+                to += RookDir[i];
+            }
+        }
+        break;
+    case PieceType::Cannon:
+        for(int i=0;i<4;i++){
+            Square to = s + CannonDir[i];
+            bool flag = false;
+            while(LegalPosition[playerColour][to] & PositionMask[5]){
+                if(m_Board[to] == None){
+                    if(!flag){
+                        moves.push_back({s,to,m_Board[to]});
+                    }
+                }else{
+                    if(!flag){
+                        flag = true;
+                    }else{
+                        if(GetPieceColour(m_Board[to]) == enemyColour){
+                            moves.push_back({s,to,m_Board[to]});
+                        }
+                        break;
+                    }
+                }
+                to += CannonDir[i];
+            }
+        }
+        break;
+
+    case PieceType::Pawn:
+        for(int i=0;i<4;i++){
+            Square to = s + PawnDir[playerColour][i];
+            if(LegalPosition[playerColour][to] & PositionMask[6]){
+                if(m_Board[to] == None || GetPieceColour(m_Board[to]) == enemyColour){
+                    moves.push_back({s,to,m_Board[to]});
+                }
+            }
+        }
+        break;
+    default:
+        break;
+    }
+
+    return std::move(moves);
 }
