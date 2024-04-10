@@ -460,13 +460,18 @@ void Application::RenderBoard()
     // Draw pieces
     for (int y = 0; y < 10; y++) {
         for (int x = 0; x < 9; x++) {
-            std::shared_ptr<SubTexture> piece = GetChessSprite(m_Board[51 + x + y* 16]);
-            if(piece)
+            Square idx = 51 + x + y* 16;
+            std::shared_ptr<SubTexture> piece = GetChessSprite(m_Board[idx]);
+            if(piece && m_SelectedPiece != idx)
             {
                 Renderer::DrawRect({-4.0f + x, 5.0f - y,0.0f}, {1.0f, 1.0f}, piece);
             }
         }
     }
+
+    // Draw selected piece
+    if(m_SelectedPiece != INVALID_SQUARE)
+        Renderer::DrawRect({m_BoardMousePosition.x,m_BoardMousePosition.y,0.5f}, {1.0f, 1.0f}, GetChessSprite(m_Board[m_SelectedPiece]));
 
     Renderer::Flush();
 

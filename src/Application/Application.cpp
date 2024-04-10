@@ -287,20 +287,44 @@ void Application::OnMouseButton(int32_t button, int32_t action, int32_t mods)
                 float y = round(point.y);
                 Square file = (Square)abs(y-5.0f);
 
-                std::cout<<rank<<file<<std::endl;
+                Square selectedSquare = ToSquare(rank,file);
+
+                if(m_SelectedPiece != INVALID_SQUARE && m_SelectedPiece != selectedSquare) {
+                   
+                   m_SelectedPiece = INVALID_SQUARE;
+                }
+                else {
+                    Square piece = m_Board[selectedSquare];
+                    m_SelectedPiece = piece == None ? INVALID_SQUARE : selectedSquare;
+                }
 
             }
         }
         else if(action == GLFW_RELEASE){
+            if(point.x > -5 && point.x < 5 && point.y > -5 && point.y < 6) {
+                // 横排 由列组成
+                float x = round(point.x);
+                Square rank = (Square)(x+4.0f);
+                // 纵队 由路组成
+                float y = round(point.y);
+                Square file = (Square)abs(y-5.0f);
+                
+                Square selectedSquare = ToSquare(rank,file);
+
+                if(m_SelectedPiece != INVALID_SQUARE) {
+
+                }
+            }
 
             m_IsHoldingPiece = false;
-
+            m_SelectedPiece = INVALID_SQUARE;
         }
 
        
     }
     else if(button == GLFW_MOUSE_BUTTON_RIGHT){
-        
+        m_SelectedPiece = INVALID_SQUARE;
+        m_IsHoldingPiece=false;
     }
 }
 

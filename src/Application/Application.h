@@ -60,7 +60,7 @@ private:
     bool m_Running = false;
     
     Board m_Board;
-    Square m_SelectedPiece;
+    Square m_SelectedPiece = INVALID_SQUARE;
     bool m_IsHoldingPiece;
     std::string m_BoardFEN;
 
